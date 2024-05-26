@@ -414,24 +414,24 @@
 								<div class="row">
 									<div class="col-sm-6">
 										<div class="form-group">
-											<input type="text" class="form-control" id="name" placeholder="Name*">
+											<input type="text" class="form-control" id="userName" placeholder="Name*">
 										</div>
 									</div>
 									<div class="col-sm-6">
 										<div class="form-group">
-											<input type="email" class="form-control" id="mail" placeholder="Email*">
+											<input type="email" class="form-control" id="emailId" placeholder="Email*">
 										</div>
 									</div>
 									<div class="col-sm-12">
 										<div class="form-group">
-											<textarea name="message" id="message" class="form-control" placeholder="Message*" rows="5"></textarea>
+											<textarea name="message" id="userMsg" class="form-control" placeholder="Message*" rows="5"></textarea>
 										</div>
 									</div>
 									<div class="col-sm-12">
-										<a href="#" class="btn btn-secondary">
+										<button onclick="contactUs()" type="button" class="btn btn-secondary">
 											Send Msg
-										</a>
-										<button class="btn btn-secondary" onclick="openDaySchedule()">
+										</button>
+										<button onclick="openDaySchedule()" class="btn btn-secondary">
 											Schedule Meeting
 										</button>
 									</div>
@@ -564,7 +564,6 @@
 
 
 
-
 		</div>
 		<footer class="footer">
 			<div class="footer-top d-none">
@@ -646,6 +645,28 @@
 			</div>
 			
 		</footer>
+
+
+		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+			  <div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title" style="color: #3c37f1;">Cluck</h3>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<h5 class="modal-txt" style="text-align: center; color: #1998ff;" >Mail sending...</h5>
+				</div>
+				<div class="modal-footer">
+				  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>
+			  </div>
+			</div>
+		  </div>
+
+
 		<script src="/assets/base/vendor.bundle.base.js"></script>
 		<script src="/assets/owl.carousel/js/owl.carousel.js"></script>
 		<script src="/assets/aos/js/aos.js"></script>
@@ -662,8 +683,38 @@
 					secondary: '#adadad',
 					},
 				});
-				}
+			}
 
+			function contactUs(){
+				var userName	= $('#userName').val();
+				var emailId 	= $('#emailId').val();
+				var userMsg 	= $('#userMsg').val();
+				var data 		= {userName, emailId, userMsg };
+
+				console.log(data);
+				$('#exampleModal').modal('show');
+				fetch("https://cfrqmr-3000.csb.app/sendMail",
+					{
+						headers: {
+							'Accept': 'application/json',
+							'Content-Type': 'application/json'
+						},
+						method: "POST",
+						body: JSON.stringify(data)
+					})
+					.then((res)=>{
+						return res.json();
+					})
+					.then(function(res){ 
+						$('.modal-txt').html(res['msg']);
+					})
+					.catch(function(res){ 
+						console.log('\n\n------------ Error -----------------\n\n');
+						console.log(res);
+						$('.modal-body').html('Please contact with mail praenjit10112@gmail.com');
+					})
+
+			}
 		</script>
 	</body>
 </html>
